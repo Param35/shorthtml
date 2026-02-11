@@ -1,17 +1,40 @@
-<script>
-  (function () {
-    const TARGET = "https://sparexpics.top";
-    const incoming = new URLSearchParams(window.location.search);
-    const url = new URL(TARGET);
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Redirecting…</title>
 
-    for (const [k, v] of incoming.entries()) {
-      url.searchParams.set(k, v);
-    }
+  <!-- If JS is disabled, this will still redirect but won't preserve UTMs -->
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=https://example.com/target" />
+  </noscript>
+</head>
+<body>
+  <p>Redirecting…</p>
 
-    const hash = window.location.hash || "";
+  <script>
+    (function () {
+      // ✅ Set your target URL here
+      const TARGET = "https://sparexpics.top";
 
-    setTimeout(() => {
+      // Incoming params (?utm_source=...&utm_campaign=... etc.)
+      const incoming = new URLSearchParams(window.location.search);
+
+      // Build the outgoing URL (handles if TARGET already has ?params)
+      const url = new URL(TARGET);
+
+      // Option A: forward EVERYTHING (utm_*, gclid, fbclid, etc.)
+      for (const [k, v] of incoming.entries()) {
+        url.searchParams.set(k, v);
+      }
+
+      // Keep hash (#...) if present
+      const hash = window.location.hash || "";
+
+      // Redirect (replace avoids keeping Link B in browser history)
       window.location.replace(url.toString() + hash);
-    }, 2000); // 2000ms = 2 seconds
-  })();
-</script>
+    })();
+  </script>
+</body>
+</html>
